@@ -1,6 +1,6 @@
 [package]
 name = "hedge_rs"
-version = "0.2.5"
+version = "0.2.6"
 edition = "2024"
 authors = ["flowerinthenight <root@flowerinthenight.com>"]
 description = "A cluster membership library built on spindle-rs."
@@ -18,6 +18,6 @@ scopeguard = "1.2.0"
 uuid = { version = "1.18.1", features = ["v4"] }
 anyhow = "1.0.99"
 crossbeam-channel = "0.5.15"
-spindle_rs = "0.2.17"
+spindle_rs = "0.2.18"
 num_cpus = "1.17.0"
 base64ct = { version = "1.8.0", features = ["alloc"] }
