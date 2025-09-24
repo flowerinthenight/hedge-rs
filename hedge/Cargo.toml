@@ -1,23 +1,23 @@
 [package]
 name = "hedge_rs"
-version = "0.2.6"
-edition = "2024"
-authors = ["flowerinthenight <root@flowerinthenight.com>"]
 description = "A cluster membership library built on spindle-rs."
-license = "MIT"
-repository = "https://github.com/flowerinthenight/hedge-rs"
-keywords = ["memberlist", "cluster", "spanner", "leader-election", "distributed-systems"]
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+keywords = { workspace = true }
 
 [dependencies]
-tokio = { version = "1.47.1", features = ["full"] }
-google-cloud-spanner = { package="gcloud-spanner", version="1.4.1" }
-exp_backoff = "0.1.6"
-log = "0.4.28"
-time = "0.3.43"
-scopeguard = "1.2.0"
-uuid = { version = "1.18.1", features = ["v4"] }
-anyhow = "1.0.99"
-crossbeam-channel = "0.5.15"
-spindle_rs = "0.2.18"
-num_cpus = "1.17.0"
-base64ct = { version = "1.8.0", features = ["alloc"] }
+tokio = { workspace = true }
+google-cloud-spanner = { workspace = true }
+exp_backoff = { workspace = true }
+log = { workspace = true }
+time = { workspace = true }
+scopeguard = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+crossbeam-channel = { workspace = true }
+spindle_rs = { workspace = true }
+num_cpus = { workspace = true }
+base64ct = { workspace = true }

@@ -1,19 +1,12 @@
 [package]
 name = "example"
-version = "0.1.0"
-edition = "2024"
+version = { workspace = true }
+edition = { workspace = true }
 
 [dependencies]
 hedge_rs = { path = "../hedge" }
-env_logger = "0.11.8"
-log = "0.4.28"
-ctrlc = "3.5.0"
-anyhow = "1.0.99"
-# We don't depend on rustls, but it's panicking without this.
-# https://github.com/rustls/rustls/issues/1938
-rustls = { version = "0.23.31", default-features = false, features = [
-    "ring",
-    "logging",
-    "std",
-    "tls12",
-] }
+env_logger = { workspace = true }
+log = { workspace = true }
+ctrlc = { workspace = true }
+anyhow = { workspace = true }
+rustls = { workspace = true }
