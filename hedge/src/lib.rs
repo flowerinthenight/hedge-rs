@@ -132,8 +132,8 @@ impl Op {
 
         {
             let lc = self.lock[0].clone();
-            if let Ok(mut v) = lc.lock() {
-                v.run()?;
+            if let Ok(mut mg) = lc.lock() {
+                mg.run()?;
             }
         }
 
@@ -170,8 +170,8 @@ impl Op {
             let recv = rxs.clone();
 
             {
-                let mut rv = recv.lock().unwrap();
-                rv.insert(i, rx.clone());
+                let mut mg = recv.lock().unwrap();
+                mg.insert(i, rx.clone());
             }
         }
 
@@ -192,7 +192,7 @@ impl Op {
 
             thread::spawn(move || {
                 loop {
-                    let mut rx: Option<Receiver<WorkerCtrl>> = None;
+                    let mut rx = vec![];
 
                     {
                         let mg = match recv.lock() {
@@ -204,11 +204,11 @@ impl Op {
                         };
 
                         if let Some(v) = mg.get(&i) {
-                            rx = Some(v.clone());
+                            rx = vec![v.clone()];
                         }
                     }
 
-                    match rx.unwrap().recv().unwrap() {
+                    match rx[0].recv().unwrap() {
                         WorkerCtrl::TcpServer(stream) => {
                             let start = Instant::now();
                             defer!(debug!("[T{i}]: tcp took {:?}", start.elapsed()));
@@ -266,8 +266,8 @@ impl Op {
 
                             if delete {
                                 let members = members.clone();
-                                if let Ok(mut v) = members.lock() {
-                                    v.remove(&name);
+                                if let Ok(mut mg) = members.lock() {
+                                    mg.remove(&name);
                                 }
                             }
                         }
@@ -279,8 +279,8 @@ impl Op {
                                 let mut leader = String::new();
 
                                 {
-                                    if let Ok(v) = lock.lock() {
-                                        let (_, writer, _) = v.has_lock();
+                                    if let Ok(mg) = lock.lock() {
+                                        let (_, writer, _) = mg.has_lock();
                                         write!(&mut leader, "{}", writer).unwrap();
                                     }
                                 }
@@ -419,8 +419,8 @@ impl Op {
                     let mut mm: Vec<String> = Vec::new();
 
                     {
-                        if let Ok(v) = members.clone().lock() {
-                            for (k, _) in &*v {
+                        if let Ok(mg) = members.clone().lock() {
+                            for (k, _) in &*mg {
                                 if k != &id_1 {
                                     mm.push(k.clone());
                                 }
@@ -433,8 +433,8 @@ impl Op {
                     }
 
                     {
-                        if let Ok(v) = members.clone().lock() {
-                            info!("{} member(s) tracked", v.len());
+                        if let Ok(mg) = members.clone().lock() {
+                            info!("{} member(s) tracked", mg.len());
                         }
                     }
                 } else {
@@ -442,8 +442,8 @@ impl Op {
                     let mut leader = String::new();
 
                     {
-                        if let Ok(v) = lock.lock() {
-                            let (_, writer, _) = v.has_lock();
+                        if let Ok(mg) = lock.lock() {
+                            let (_, writer, _) = mg.has_lock();
                             write!(&mut leader, "{}", writer).unwrap();
                         }
                     }
@@ -487,19 +487,19 @@ impl Op {
 
                         let mm: Vec<&str> = resp[1..resp.len() - 1].split(",").collect();
                         if mm.len() > 0 {
-                            if let Ok(mut v) = members.clone().lock() {
-                                v.clear();
+                            if let Ok(mut mg) = members.clone().lock() {
+                                mg.clear();
                                 for m in mm {
                                     if m.len() > 0 && !m.starts_with("+") {
-                                        v.insert(m.to_string(), 0);
+                                        mg.insert(m.to_string(), 0);
                                     }
                                 }
                             }
                         }
 
                         {
-                            if let Ok(v) = members.clone().lock() {
-                                info!("{} member(s) tracked", v.len());
+                            if let Ok(mg) = members.clone().lock() {
+                                info!("{} member(s) tracked", mg.len());
                             }
                         }
                     }
@@ -522,8 +522,8 @@ impl Op {
         }
 
         let lock = self.lock[0].clone();
-        if let Ok(v) = lock.lock() {
-            return v.has_lock();
+        if let Ok(mg) = lock.lock() {
+            return mg.has_lock();
         }
 
         return (false, String::from(""), 0);
@@ -537,8 +537,8 @@ impl Op {
             return ret;
         }
 
-        if let Ok(v) = self.members.lock() {
-            for (k, _) in &*v {
+        if let Ok(mg) = self.members.lock() {
+            for (k, _) in &*mg {
                 ret.push(k.clone());
             }
         }
@@ -586,8 +586,8 @@ impl Op {
         let mut m: Vec<String> = vec![];
 
         {
-            if let Ok(v) = self.members.clone().lock() {
-                for (k, _) in &*v {
+            if let Ok(mg) = self.members.clone().lock() {
+                for (k, _) in &*mg {
                     m.push(k.clone());
                 }
             }
@@ -631,8 +631,8 @@ impl Op {
 
     pub fn close(&mut self) {
         let lock = self.lock[0].clone();
-        if let Ok(mut v) = lock.lock() {
-            v.close();
+        if let Ok(mut mg) = lock.lock() {
+            mg.close();
         }
     }
 }
