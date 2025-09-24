@@ -195,7 +195,7 @@ impl Op {
                     let mut rx: Option<Receiver<WorkerCtrl>> = None;
 
                     {
-                        let rxval = match recv.lock() {
+                        let mg = match recv.lock() {
                             Ok(v) => v,
                             Err(e) => {
                                 error!("T{i}: lock failed: {e}");
@@ -203,7 +203,7 @@ impl Op {
                             }
                         };
 
-                        if let Some(v) = rxval.get(&i) {
+                        if let Some(v) = mg.get(&i) {
                             rx = Some(v.clone());
                         }
                     }
@@ -211,10 +211,7 @@ impl Op {
                     match rx.unwrap().recv().unwrap() {
                         WorkerCtrl::TcpServer(stream) => {
                             let start = Instant::now();
-
-                            defer! {
-                                debug!("[T{i}]: tcp took {:?}", start.elapsed());
-                            }
+                            defer!(debug!("[T{i}]: tcp took {:?}", start.elapsed()));
 
                             handle_protocol(
                                 i,
@@ -228,12 +225,9 @@ impl Op {
                         WorkerCtrl::PingMember(name) => {
                             let mut delete = false;
                             let start = Instant::now();
+                            defer!(debug!("[T{i}]: ping took {:?}", start.elapsed()));
 
-                            defer! {
-                                debug!("[T{i}]: ping took {:?}", start.elapsed());
-                            }
-
-                            'onetime: loop {
+                            (|| {
                                 let hp: Vec<&str> = name.split(":").collect();
                                 let hh: Vec<&str> = hp[0].split(".").collect();
                                 let ip = SocketAddr::new(
@@ -251,14 +245,14 @@ impl Op {
                                     Err(e) => {
                                         error!("connect_timeout to {name} failed: {e}");
                                         delete = true;
-                                        break 'onetime;
+                                        return;
                                     }
                                 };
 
                                 let mut send = String::new();
                                 write!(&mut send, "{}\n", CMD_PING).unwrap();
                                 if let Err(_) = stream.write_all(send.as_bytes()) {
-                                    break 'onetime;
+                                    return;
                                 }
 
                                 let mut reader = BufReader::new(&stream);
@@ -268,9 +262,7 @@ impl Op {
                                 if !resp.starts_with("+1") {
                                     delete = true
                                 }
-
-                                break 'onetime;
-                            }
+                            })();
 
                             if delete {
                                 let members = members.clone();
@@ -281,12 +273,9 @@ impl Op {
                         }
                         WorkerCtrl::ToLeader { msg, tx } => {
                             let start = Instant::now();
+                            defer!(debug!("[T{i}]: toleader took {:?}", start.elapsed()));
 
-                            defer! {
-                                debug!("[T{i}]: toleader took {:?}", start.elapsed());
-                            }
-
-                            'onetime: loop {
+                            (|| {
                                 let mut leader = String::new();
 
                                 {
@@ -298,7 +287,7 @@ impl Op {
 
                                 if leader.is_empty() {
                                     tx.send("-no leader".as_bytes().to_vec()).unwrap();
-                                    break 'onetime;
+                                    return;
                                 }
 
                                 let encoded = Base64::encode_string(&msg);
@@ -321,7 +310,7 @@ impl Op {
                                         let mut err = String::new();
                                         write!(&mut err, "-connect_timeout failed: {e}").unwrap();
                                         tx.send(err.as_bytes().to_vec()).unwrap();
-                                        break 'onetime;
+                                        return;
                                     }
                                 };
 
@@ -333,18 +322,13 @@ impl Op {
                                     reader.read_line(&mut resp).unwrap();
                                     tx.send(resp[..resp.len() - 1].as_bytes().to_vec()).unwrap();
                                 }
-
-                                break 'onetime;
-                            }
+                            })();
                         }
                         WorkerCtrl::Broadcast { name, msg, tx } => {
                             let start = Instant::now();
+                            defer!(debug!("[T{i}]: broadcast took {:?}", start.elapsed()));
 
-                            defer! {
-                                debug!("[T{i}]: broadcast took {:?}", start.elapsed());
-                            }
-
-                            'onetime: loop {
+                            (|| {
                                 let encoded = Base64::encode_string(&msg);
 
                                 let hp: Vec<&str> = name.split(":").collect();
@@ -365,7 +349,7 @@ impl Op {
                                         let mut err = String::new();
                                         write!(&mut err, "-connect_timeout failed: {e}").unwrap();
                                         tx.send(err.as_bytes().to_vec()).unwrap();
-                                        break 'onetime;
+                                        return;
                                     }
                                 };
 
@@ -377,9 +361,7 @@ impl Op {
                                     reader.read_line(&mut resp).unwrap();
                                     tx.send(resp[..resp.len() - 1].as_bytes().to_vec()).unwrap();
                                 }
-
-                                break 'onetime;
-                            }
+                            })();
                         }
                     }
                 }
