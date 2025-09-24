@@ -11,7 +11,7 @@ repository = "https://github.com/flowerinthenight/hedge-rs"
 keywords = ["memberlist", "cluster", "spanner", "leader-election", "distributed-systems"]
 
 [workspace.dependencies]
-anyhow = "1.0.99"
+anyhow = "1.0.100"
 base64ct = { version = "1.8.0", features = ["alloc"] }
 crossbeam-channel = "0.5.15"
 ctrlc = "3.5.0"
@@ -22,7 +22,7 @@ log = "0.4.28"
 num_cpus = "1.17.0"
 # We don't depend on rustls, but it's panicking without this.
 # https://github.com/rustls/rustls/issues/1938
-rustls = { version = "0.23.31", default-features = false, features = [
+rustls = { version = "0.23.32", default-features = false, features = [
     "ring",
     "logging",
     "std",
@@ -30,6 +30,6 @@ rustls = { version = "0.23.31", default-features = false, features = [
 ] }
 scopeguard = "1.2.0"
 spindle_rs = "0.2.18"
-time = "0.3.43"
+time = "0.3.44"
 tokio = { version = "1.47.1", features = ["full"] }
 uuid = { version = "1.18.1", features = ["v4"] }
