@@ -82,6 +82,7 @@ A sample cloud-init [startup script](./startup-gcp-mig.sh) is provided for spinn
 ```bash
 # Create a launch template. The provided --service-account
 # will provide access to Spanner.
+$ cd scripts/
 $ gcloud compute instance-templates create hedge-tmpl \
   --machine-type e2-micro \
   --service-account=name@project.iam.gserviceaccount.com \
