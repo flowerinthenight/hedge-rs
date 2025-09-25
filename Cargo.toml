@@ -3,7 +3,7 @@ resolver = "2"
 members = ["example", "hedge"]
 
 [workspace.package]
-version = "0.2.8"
+version = "0.2.9"
 edition = "2024"
 authors = ["flowerinthenight <root@flowerinthenight.com>"]
 license = "MIT"
@@ -29,7 +29,7 @@ rustls = { version = "0.23.32", default-features = false, features = [
     "tls12",
 ] }
 scopeguard = "1.2.0"
-spindle_rs = "0.2.19"
+spindle_rs = "0.2.20"
 time = "0.3.44"
 tokio = { version = "1.47.1", features = ["full"] }
 uuid = { version = "1.18.1", features = ["v4"] }
