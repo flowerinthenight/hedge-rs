@@ -77,7 +77,7 @@ $ echo 'broadcast hello all nodes!' | nc localhost 9092
 
 ## Runing the sample on a GCP MIG
 
-A sample cloud-init [startup script](./startup-gcp-mig.sh) is provided for spinning up a [Managed Instance Group](https://cloud.google.com/compute/docs/instance-groups#managed_instance_groups) with the sample code running as a systemd service. You need to update the `ExecStart` section first with your actual Spanner connection URL and table name.
+A sample cloud-init [startup script](./scripts/startup-gcp-mig.sh) is provided for spinning up a [Managed Instance Group](https://cloud.google.com/compute/docs/instance-groups#managed_instance_groups) with the sample code running as a systemd service. You need to update the `ExecStart` section first with your actual Spanner connection URL and table name.
 
 ```bash
 # Create a launch template. The provided --service-account
