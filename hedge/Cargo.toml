@@ -10,7 +10,6 @@ keywords = { workspace = true }
 
 [dependencies]
 tokio = { workspace = true }
-google-cloud-spanner = { workspace = true }
 exp_backoff = { workspace = true }
 log = { workspace = true }
 time = { workspace = true }
