@@ -3,7 +3,7 @@ resolver = "2"
 members = ["example", "hedge"]
 
 [workspace.package]
-version = "1.2.15"
+version = "1.2.16"
 edition = "2024"
 authors = ["flowerinthenight <root@flowerinthenight.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ keywords = ["memberlist", "cluster", "spanner", "leader-election", "distributed-
 
 [workspace.dependencies]
 anyhow = "1.0.100"
-base64ct = { version = "1.8.1", features = ["alloc"] }
+base64ct = { version = "1.8.2", features = ["alloc"] }
 crossbeam-channel = "0.5.15"
 ctrlc = "3.5.1"
 env_logger = "0.11.8"
@@ -28,7 +28,7 @@ rustls = { version = "0.23.35", default-features = false, features = [
     "tls12",
 ] }
 scopeguard = "1.2.0"
-spindle_rs = "1.2.26"
+spindle_rs = "1.2.27"
 time = "0.3.44"
-tokio = { version = "1.48.0", features = ["full"] }
+tokio = { version = "1.49.0", features = ["full"] }
 uuid = { version = "1.19.0", features = ["v4"] }
